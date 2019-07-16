@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+	<meta charset="utf-8">
+    <meta name="robots" content="all,follow">
+    <meta name="googlebot" content="index,follow,snippet,archive">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="WeaveSocks Demo App">
+    <meta name="author" content="Ondrej Svestka | ondrejsvestka.cz">
+    <meta name="keywords" content="">
+
+	<title>KupcakeShop</title>
+
+	<meta name="keywords" content="">
+
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,700,300,100'
+          rel='stylesheet' type='text/css'>
+
+    <!-- styles -->
+    <link href="css/font-awesome.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/animate.min.css" rel="stylesheet">
+    <link href="css/owl.carousel.css" rel="stylesheet">
+    <link href="css/owl.theme.css" rel="stylesheet">
+
+    <!-- theme stylesheet -->
+    <link href="css/style.blue.css" rel="stylesheet" id="theme-stylesheet">
+
+    <!-- your stylesheet with modifications -->
+    <link href="css/custom.css" rel="stylesheet">
+
+	<script src="js/text-receipt.js"></script>
+
+	<link rel="shortcut icon" href="favicon.png">
+</head>
+
+<body>
+	<div id="topbar"></div>
+	<div id="navbar"></div>
+	<h1>Confirmation!</h1>
+	<br>
+	<p>Your order has been placed!</p>
+	<br>
+	<p>You should receive a text confirmation soon! :)</p>
+
+	<script src="js/jquery-1.11.0.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/jquery.cookie.js"></script>
+	<script src="js/waypoints.min.js"></script>
+	<script src="js/modernizr.js"></script>
+	<script src="js/bootstrap-hover-dropdown.js"></script>
+	<script src="js/owl.carousel.min.js"></script>
+	<script src="js/front.js"></script>
+	<script src="js/jquery.query-object.js"></script>
+	<script src="js/client.js"></script>
+	<script>
+
+    $(document).ready(function () {
+        $.ajaxSetup({
+            contentType: "application/json; charset=utf-8"
+        });
+
+        console.log("Loading components for category.html");
+        $("#topbar").load("topbar.html");
+        $("#navbar").load("navbar.html");
+        $("#footer").load("footer.html");
+    })
+	</script>
+</body>
+</html>
