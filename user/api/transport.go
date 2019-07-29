@@ -95,6 +95,12 @@ func MakeHTTPHandler(e Endpoints, logger log.Logger, tracer stdopentracing.Trace
 		encodeHealthResponse,
 		append(options, httptransport.ServerBefore(opentracing.FromHTTPRequest(tracer, "GET /health", logger)))...,
 	))
+	r.Methods("POST").Path("/sms").Handler(httptransport.NewServer(
+		e.TextEndpoint,
+		decodeTextRequest,
+		encodeResponse,
+		append(options, httptransport.ServerBefore(opentracing.FromHTTPRequest(tracer, "POST /sms", logger)))...,
+	))
 	r.Handle("/metrics", promhttp.Handler())
 	return r
 }
@@ -200,4 +206,8 @@ func encodeResponse(_ context.Context, w http.ResponseWriter, response interface
 	// All of our response objects are JSON serializable, so we just do that.
 	w.Header().Set("Content-Type", "application/hal+json")
 	return json.NewEncoder(w).Encode(response)
+}
+
+func decodeTextRequest(_ context.Context, r *http.Request) (interface{}, error){
+	return struct{}{}, nil
 }

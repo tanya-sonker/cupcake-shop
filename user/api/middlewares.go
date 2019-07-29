@@ -36,7 +36,7 @@ func (mw loggingMiddleware) Login(username, password string) (user users.User, e
 	return mw.next.Login(username, password)
 }
 
-func (mw loggingMiddleware) Register(username, password, email, first, last string) (string, error) {
+func (mw loggingMiddleware) Register(username, password, email, first, last, phone string) (string, error) {
 	defer func(begin time.Time) {
 		mw.logger.Log(
 			"method", "Register",
@@ -45,7 +45,7 @@ func (mw loggingMiddleware) Register(username, password, email, first, last stri
 			"took", time.Since(begin),
 		)
 	}(time.Now())
-	return mw.next.Register(username, password, email, first, last)
+	return mw.next.Register(username, password, email, first, last, phone)
 }
 
 func (mw loggingMiddleware) PostUser(user users.User) (id string, err error) {
@@ -159,6 +159,18 @@ func (mw loggingMiddleware) Health() (health []Health) {
 	return mw.next.Health()
 }
 
+// changed this: 23 July 2019
+func (mw loggingMiddleware) Text() (string, error) {
+	defer func(begin time.Time) {
+		mw.logger.Log(
+			"method", "Text",
+			"result", "sms",
+			"took", time.Since(begin),
+		)
+	}(time.Now())
+	return mw.next.Text()
+}
+
 type instrumentingService struct {
 	requestCount   metrics.Counter
 	requestLatency metrics.Histogram
@@ -183,13 +195,13 @@ func (s *instrumentingService) Login(username, password string) (users.User, err
 	return s.Service.Login(username, password)
 }
 
-func (s *instrumentingService) Register(username, password, email, first, last string) (string, error) {
+func (s *instrumentingService) Register(username, password, email, first, last, phone string) (string, error) {
 	defer func(begin time.Time) {
 		s.requestCount.With("method", "register").Add(1)
 		s.requestLatency.With("method", "register").Observe(time.Since(begin).Seconds())
 	}(time.Now())
 
-	return s.Service.Register(username, password, email, first, last)
+	return s.Service.Register(username, password, email, first, last, phone)
 }
 
 func (s *instrumentingService) PostUser(user users.User) (string, error) {
@@ -262,4 +274,14 @@ func (s *instrumentingService) Health() []Health {
 	}(time.Now())
 
 	return s.Service.Health()
+}
+
+// changed this: 23 July 2019
+func (s *instrumentingService) Text() (string, error) {
+	defer func(begin time.Time) {
+		s.requestCount.With("method", "text").Add(1)
+		s.requestLatency.With("method", "text").Observe(time.Since(begin).Seconds())
+	}(time.Now())
+
+	return s.Service.Text()
 }

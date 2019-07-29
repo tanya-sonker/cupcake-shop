@@ -21,7 +21,7 @@ var (
 // Service is the user service, providing operations for users to login, register, and retrieve customer information.
 type Service interface {
 	Login(username, password string) (users.User, error) // GET /login
-	Register(username, password, email, first, last string) (string, error)
+	Register(username, password, email, first, last, phone string) (string, error)
 	GetUsers(id string) ([]users.User, error)
 	PostUser(u users.User) (string, error)
 	GetAddresses(id string) ([]users.Address, error)
@@ -30,6 +30,8 @@ type Service interface {
 	PostCard(u users.Card, userid string) (string, error)
 	Delete(entity, id string) error
 	Health() []Health // GET /health
+	// changed this: 23 July 2019
+	Text() (string, error)
 }
 
 // NewFixedService returns a simple implementation of the Service interface,
@@ -59,13 +61,14 @@ func (s *fixedService) Login(username, password string) (users.User, error) {
 
 }
 
-func (s *fixedService) Register(username, password, email, first, last string) (string, error) {
+func (s *fixedService) Register(username, password, email, first, last, phone string) (string, error) {
 	u := users.New()
 	u.Username = username
 	u.Password = calculatePassHash(password, u.Salt)
 	u.Email = email
 	u.FirstName = first
 	u.LastName = last
+	u.PhoneNumber = phone
 	err := db.CreateUser(&u)
 	return u.UserID, err
 }
@@ -156,4 +159,9 @@ func calculatePassHash(pass, salt string) string {
 	io.WriteString(h, salt)
 	io.WriteString(h, pass)
 	return fmt.Sprintf("%x", h.Sum(nil))
+}
+
+// changed this: 23 July 2019
+func (s *fixedService) Text() (string, error) {
+	return "sms", nil
 }

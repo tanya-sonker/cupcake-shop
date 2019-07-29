@@ -6,12 +6,16 @@ package api
 
 import (
 	"context"
-
+	"fmt"
 	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/kit/tracing/opentracing"
 	"github.com/microservices-demo/user/db"
 	"github.com/microservices-demo/user/users"
 	stdopentracing "github.com/opentracing/opentracing-go"
+	// for texting ;)
+	"github.com/sfreiberg/gotwilio"
+	// added for logger log
+	"log"
 )
 
 // Endpoints collects the endpoints that comprise the Service.
@@ -26,6 +30,7 @@ type Endpoints struct {
 	CardPostEndpoint    endpoint.Endpoint
 	DeleteEndpoint      endpoint.Endpoint
 	HealthEndpoint      endpoint.Endpoint
+	TextEndpoint		endpoint.Endpoint
 }
 
 // MakeEndpoints returns an Endpoints structure, where each endpoint is
@@ -42,6 +47,7 @@ func MakeEndpoints(s Service, tracer stdopentracing.Tracer) Endpoints {
 		CardGetEndpoint:     opentracing.TraceServer(tracer, "GET /cards")(MakeCardGetEndpoint(s)),
 		DeleteEndpoint:      opentracing.TraceServer(tracer, "DELETE /")(MakeDeleteEndpoint(s)),
 		CardPostEndpoint:    opentracing.TraceServer(tracer, "POST /cards")(MakeCardPostEndpoint(s)),
+		TextEndpoint:        opentracing.TraceServer(tracer, "POST /sms")(MakeTextEndpoint(s)),
 	}
 }
 
@@ -65,8 +71,9 @@ func MakeRegisterEndpoint(s Service) endpoint.Endpoint {
 		span, ctx = stdopentracing.StartSpanFromContext(ctx, "register user")
 		span.SetTag("service", "user")
 		defer span.Finish()
+		fmt.Printf("make register endpoint!")
 		req := request.(registerRequest)
-		id, err := s.Register(req.Username, req.Password, req.Email, req.FirstName, req.LastName)
+		id, err := s.Register(req.Username, req.Password, req.Email, req.FirstName, req.LastName, req.PhoneNumber)
 		return postResponse{ID: id}, err
 	}
 }
@@ -219,6 +226,36 @@ func MakeHealthEndpoint(s Service) endpoint.Endpoint {
 	}
 }
 
+// MakeTextEndpoint returns an endpoint via the given service --> basically ripped off Register
+func MakeTextEndpoint(s Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+		var span stdopentracing.Span
+		span, ctx = stdopentracing.StartSpanFromContext(ctx, "text user")
+		span.SetTag("service", "user")
+		defer span.Finish()
+		fmt.Printf("make text endpoint!")  
+		log.Printf("making text endpoint ;)")
+		// converting Node.js Twilio code to Go 
+		// imported package already
+		accountSid := "AC31cf22ba35afc6ca1700895e9715d8cd"
+    	authToken := "f0cec08906afd4f9e800deafa1936754"
+    	twilio := gotwilio.NewTwilioClient(accountSid, authToken)
+    	from := "+12029155326"
+    	to := "+14084219637"
+    	message := "Hey Amit! This is Project Kupcake. Your order has been placed, SUCCESS! :)))))"	
+    	// changed this: 23 July 2019
+    	_, _, err = twilio.SendSMS(from, to, message, "", "")
+
+    	//twilio.SendSMS(from, to, message, "", "")
+    	// changed this: 23 July 2019
+    	log.Printf(err.Error())
+    	log.Printf("making text endpoint part 2!!! ;)")
+		//return message, nil
+		return message, nil
+	}
+}
+
+
 type GetRequest struct {
 	ID   string
 	Attr string
@@ -261,6 +298,7 @@ type registerRequest struct {
 	Email     string `json:"email"`
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
+	PhoneNumber string `json:"phoneNumber"`
 }
 
 type statusResponse struct {
