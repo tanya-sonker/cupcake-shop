@@ -32,7 +32,7 @@ function register() {
     var password = $('#register-password-modal').val();
     var firstName = $('#register-first-modal').val();
     var lastName = $('#register-last-modal').val();
-    var phoneNumber = $('#register-number-modal').val();
+    var phoneNumber = $('#register-number-modal').val(); 
     var postvals = JSON.stringify({
 		"username": username,
 		"password": password,

@@ -311,33 +311,30 @@
             });
     });
 
-    module.exports = app;
-
     app.post("/sms", function(req, res, next) {
-        const accountSid = 'AC31cf22ba35afc6ca1700895e9715d8cd';
-        const authToken = '6a8ad4553a1b991f70c6ceda066fd5ca';
-        const notifyServiceSid = 'ISbe22e0698e78888b4852c2799bdc9ac6';
-        const client = require('twilio')(accountSid, authToken);
-
-        client.notify.services(notifyServiceSid)
-        .notifications.create({    
-        toBinding: JSON.stringify({
-            // binding_type: 'sms', address: "+14087590023"
-        binding_type: 'sms', address: "+14087590023"
-        }),
-        body: 'Your order has been placed!'
-        })
-        .then(notification => console.log(notification.sid))
-        .catch(error => console.log(error));
-
         var options = {
             uri: endpoints.smsUrl,
             method: 'POST',
             json: true,
             body: req.body
         };
-  
+
+        console.log("Posting SMS: ");
+
+        request(options, function(error, response, body) {
+            if (error) {
+                return next(error);
+            }
+            console.log("after if kk mehul");
+            helpers.respondSuccessBody(res, JSON.stringify(body));
+            console.log("after helpers kk mehul");
+        }.bind({
+            res: res
+        }));
+        console.log("after errythang kk mehul");
     });
+
+     module.exports = app;
 
 }());
 
