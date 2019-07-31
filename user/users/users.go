@@ -19,6 +19,7 @@ type User struct {
 	LastName  string    `json:"lastName" bson:"lastName"`
 	Email     string    `json:"-" bson:"email"`
 	Username  string    `json:"username" bson:"username"`
+	PhoneNumber string  `json:"phoneNumber" bson:"phoneNumber"`
 	Password  string    `json:"-" bson:"password,omitempty"`
 	Addresses []Address `json:"-,omitempty" bson:"-"`
 	Cards     []Card    `json:"-,omitempty" bson:"-"`
@@ -45,6 +46,9 @@ func (u *User) Validate() error {
 	}
 	if u.Password == "" {
 		return fmt.Errorf(ErrMissingField, "Password")
+	}
+	if u.PhoneNumber == ""{
+		return fmt.Errorf(ErrMissingField, "PhoneNumber")
 	}
 	return nil
 }
