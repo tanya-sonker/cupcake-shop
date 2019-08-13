@@ -30,11 +30,16 @@ The database, catalogue-db, maps cupcake images to their details.
 For instance, after paying for your order, you have the option to "text receipt". When that button is clicked, "front-end" routes the SMS request to "user" which makes a call to the Twilio API to send you a text.
 
 # Build Commands
-Before building, make sure to point all your docker-compose.yml files to your DockerHub repository.
-So, when microservices-demo pulls the docker images to bring the site up, it uses images from you repository instead of Weavworks'.
+Before building, make sure you're inside the microservice you want to build:
+```
+$ cd front-end
+$ docker build -t DOCKER_USERNAME/front-end:latest .
+```
+Also, make sure to point all your docker-compose.yml files to your DockerHub repository.
+So, when "microservices-demo" pulls the docker images to bring the site up, it uses images from you repository instead of Weavworks'.
 Additionally, after building your docker image with the tag that corresponds to your DockerHub repository, you must push it to your DockerHub repository like:
 ```
-docker push DOCKER_USERNAME/DOCKERHUB_REPO_NAME
+$ docker push DOCKER_USERNAME/DOCKERHUB_REPO_NAME
 ```
 Refresh DockerHub to see if the image was indeed pushed!
 
