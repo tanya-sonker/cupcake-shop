@@ -12,6 +12,6 @@ $ docker build -t DOCKER_USERNAME/front-end:latest .
 ```
 - Now, if you had to push this image, you would do:
 ```
-$ docker push tsonker/front-end
+$ docker push DOCKER_USERNAME/front-end
 ```
-In doing so, I push my image tagged "tsonker/front-end" to my DockerHub repo "front-end" where my username is tsonker.
+So, if my username is "tsonker" and I have an image tagged "tsonker/front-end", I can push it to my DockerHub repo "front-end" by following the process above.
