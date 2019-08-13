@@ -113,13 +113,14 @@ To push:
 $ docker push tsonker/user
 ```
 
-- To build the microservice "microservices-demo" which brings the entire site up:
+# Deploy Commands
+- To build the microservice "microservices-demo" which deploys the entire site :
 ```
 docker-compose -f deploy/docker-compose/docker-compose.yml up -d
 ```
 To pull the site down:
 ```
-docker-compose -f deploy/docker-compose/docker-compose.yml up -d
+docker-compose -f deploy/docker-compose/docker-compose.yml down
 ```
 Now, to view the website, open up your browser and type:
 ```
