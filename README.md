@@ -30,6 +30,7 @@ The database, catalogue-db, maps cupcake images to their details.
 For instance, after paying for your order, you have the option to "text receipt". When that button is clicked, "front-end" routes the SMS request to "user" which makes a call to the Twilio API to send you a text.
 
 # Build Commands
+## Pre-requisites
 Before building, make sure you're inside the microservice you want to build:
 ```
 $ cd front-end
@@ -38,6 +39,43 @@ $ docker build -t DOCKER_USERNAME/front-end:latest .
 
 Also, make sure to point all your docker-compose.yml files to your DockerHub repository.
 So, when "microservices-demo" pulls the docker images to bring the site up, it uses images from you repository instead of Weavworks'.
+This means: 
+- In the microservice "microservices-demo"
+```
+$ cd microservices-demo
+$ cd deploy
+$ cd docker-compose
+$ vi docker-compose.yml
+```
+Now, comment out under the microservices you are using the "image" name like this:
+```
+services:
+  front-end:
+    # image: weaveworksdemos/front-end:0.3.12
+    image: tsonker/front-end:latest
+    hostname: front-end
+    restart: always
+    cap_drop:
+      - all
+    read_only: true
+ ```
+ You can edit in the terminal itself by pressing "i" which stands for insert and pressing "esc" to exit out of insert mode.
+ 
+- In the microservice "catalogue":
+```
+$ cd catalogue
+$ vi docker-compose.yml"
+```
+Change images under catalogue and catalogue-db.
+
+- In the microservice "user"
+```
+$ cd user
+$ vi docker-compose.yml"
+```
+Change the image name under user.
+
+- No changes need to be made for the microservice "front-end" since there is no docker-compose.yml in here!
 
 Additionally, after building your docker image with the tag that corresponds to your DockerHub repository, you must push it to your DockerHub repository like:
 ```
@@ -45,7 +83,7 @@ $ docker push DOCKER_USERNAME/DOCKERHUB_REPO_NAME
 ```
 Refresh DockerHub to see if the image was indeed pushed!
 
-
+## Commands
 - To build the microservice "front-end":
 ```
 $ docker build -t DOCKER_USERNAME/front-end:latest .
@@ -73,4 +111,17 @@ $ docker build -t DOCKER_USERNAME/user:latest -f docker/user/Dockerfile-release 
 To push:
 ```
 $ docker push tsonker/user
+```
+
+- To build the microservice "microservices-demo" which brings the entire site up:
+```
+docker-compose -f deploy/docker-compose/docker-compose.yml up -d
+```
+To pull the site down:
+```
+docker-compose -f deploy/docker-compose/docker-compose.yml up -d
+```
+Now, to view the website, open up your browser and type:
+```
+localhost
 ```
