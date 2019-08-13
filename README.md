@@ -31,6 +31,7 @@ The database, catalogue-db, maps cupcake images to their details.
 - **user**: contains information about all users logged into the site. 
 "User" also accepts requests from "front-end" for action items and processes those requests to perform said action. 
 For instance, after paying for your order, you have the option to "text receipt". When that button is clicked, "front-end" routes the SMS request to "user" which makes a call to the Twilio API to send you a text.
+- others: Since KupcakeShop is modeled after WeaveWorks' open-source project, Sock Shop, there are other microservices at play which we this project does not make changes too. For example: carts, orders, payments. You can view the whole list on their [GitHub repositrory](https://github.com/microservices-demo).
 
 # Build Commands
 ## Pre-requisites
