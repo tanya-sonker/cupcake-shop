@@ -1,5 +1,5 @@
 # Build
-Before building, make sure to meet all the [pre-requisites](https://github.com/KavachSec/KupcakeShop#pre-requisites).
+Before building, make sure to meet all the [pre-requisites](https://github.com/tanya-sonker/KupcakeShop#pre-requisites).
 
 Now, you are ready to use the terminal to build and push your docker image!
 - To build 
