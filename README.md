@@ -118,11 +118,11 @@ $ docker push tsonker/user
 ```
 docker-compose -f deploy/docker-compose/docker-compose.yml up -d
 ```
-To pull the site down:
+- To pull the site down:
 ```
 docker-compose -f deploy/docker-compose/docker-compose.yml down
 ```
-Now, to view the website, open up your browser and type:
+- Now, to view the website, open up your browser and type:
 ```
 localhost
 ```
