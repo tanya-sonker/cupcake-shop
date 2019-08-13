@@ -1,6 +1,5 @@
 <!-- *** TOPBAR ***
 _________________________________________________________ -->
-
 <div id="top">
     <div class="container">
         <div class="col-md-6 offer" data-animate="fadeInDown">
@@ -125,17 +124,19 @@ _________________________________________________________ -->
 </div>
 
 <!-- Modal -->
-
-<div class="modal fade" id="exampleModalCenter">
-      <div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <iframe align="middle" width="760" height="515" src="https://www.youtube.com/embed/UorZXvhU6uI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe align="middle" width="1000" height="700" src="https://www.youtube.com/embed/UorZXvhU6uI" scrollable="no" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
       </div>
 </div>
+
+
 <!-- *** TOP BAR END *** -->
 
 <script>
+
     $(document).ready(function () {
         $.ajaxSetup({
             contentType: "application/json; charset=utf-8"
@@ -159,4 +160,7 @@ _________________________________________________________ -->
             $("#logout").remove()
         }
     });
+
+
+
 </script>
