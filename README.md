@@ -1,9 +1,7 @@
 # KupcakeShop
-KupcakeShop is an e-commerce website about a dummy cupcake shop. 
+KupcakeShop is an e-commerce website about a dummy cupcake shop that will be used as a microservices demo web application.
 
-KupcakeShop would be used as a microservices demo web application. 
-
-KupcakeShop is modeled after Weaveworks' SockShop.
+KupcakeShop is modeled after Weaveworks' [Sock Shop](https://microservices-demo.github.io/).
 
 # Built With
 ## Programming Languages 
