@@ -13,4 +13,4 @@ If you completed the pre-requisites, this should build 2 images -- catalogue and
 $ docker push DOCKER_USERNAME/catalogue
 $ docker push DOCKER_USERNAME/catalogue-db
 ```
-So, if my username is "tsonker" and I have images tagged "tsonker/catalogue" and "tsonker/catalogue-db", I can push it to my DockerHub repo "catalogue" and "catalogue-db" by following the process above.
+So, if my username is "tsonker" and I have images tagged "tsonker/catalogue" and "tsonker/catalogue-db", I can push it to my DockerHub repositories "catalogue" and "catalogue-db" by following the process above.
