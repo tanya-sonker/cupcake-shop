@@ -34,13 +34,13 @@ Before building, make sure to point all your docker-compose.yml files to your Do
 So, when microservices-demo pulls the docker images to bring the site up, it uses images from you repository instead of Weavworks'.
 Additionally, after building your docker image with the tag that corresponds to your DockerHub repository, you must push it to your DockerHub repository like:
 ```
-docker push DOCKER_REPO_NAME/MICORSERVICE_USED
+docker push DOCKER_USERNAME/DOCKERHUB_REPO_NAME
 ```
 Refresh DockerHub to see if the image was indeed pushed!
 
 - To build the microservice "front-end":
 ```
-$ docker build -t DOCKER_REPO_NAME/front-end:latest .
+$ docker build -t DOCKER_USERNAME/front-end:latest .
 ```
 Now, if you had to push this image, you would do:
 ```
@@ -58,7 +58,7 @@ $ docker push tsonker/catalogue-db
 ```
 - To build the microservice "user":
 ```
-$ docker build -t tsonker/user:latest -f docker/user/Dockerfile-release .
+$ docker build -t DOCKER_USERNAME/user:latest -f docker/user/Dockerfile-release .
 ```
 To push:
 ```
