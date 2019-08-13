@@ -6,6 +6,8 @@ Now, you are ready to use the terminal to build and push your docker image!
 ```
 $ docker-compose build
 ```
+If you completed the pre-requisites, this should build 2 images -- catalogue and catalogue-db. This implies you must have 2 different DockerHub repositories to push these images to!
+
 - Now, if you had to push this image, you would do:
 ```
 $ docker push DOCKER_USERNAME/catalogue
