@@ -23,7 +23,7 @@ $ vi endpoints.go
 ```
 - Scroll to the bottom and in input mode, change:
 ```
-		  accountSid := "YOUR_ACCOUNT_SID"
+	accountSid := "YOUR_ACCOUNT_SID"
     	authToken := "YOUR_AUTH_TOKEN"
     	twilio := gotwilio.NewTwilioClient(accountSid, authToken)
     	from := "YOUR_TWILIO_PHONE_NUMBER_"
