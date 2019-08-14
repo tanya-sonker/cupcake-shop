@@ -87,6 +87,32 @@ $ docker push DOCKER_USERNAME/DOCKERHUB_REPO_NAME
 ```
 Refresh DockerHub to see if the image was indeed pushed!
 
+Then, delete package.json and yarn.lock from front-end through the terminal.
+
+```
+$ cd front-end
+$ rm -rf package.json
+$ rm -rf yarn.lock
+```
+Then create another directory outside KupcakeShop called front-end.
+```
+$ cd ..
+$ cd ..
+$ git clone https://github.com/microservices-demo/front-end.git
+$ cd front-end
+$ pwd
+```
+Copy the print working directory. 
+Copy package.json and yarn.lock into the new directory you created. 
+```
+$ cd ..
+$ cd KupcakeShop
+$ cd front-end
+$ cp -a (the path you copied earlier)/package.json .
+$ cp -a (the path you copied earlier)/yarn.lock .
+```
+And now you can build front-end!
+
 ## Commands
 - To build the microservice "front-end":
 ```
