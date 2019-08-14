@@ -1,3 +1,9 @@
+# Catalogue
+A microservices-demo service that provides catalogue/product information. This service is built, tested and released by travis.
+![catalogue_1](https://github.com/tanya-sonker/KupcakeShop/blob/master/catalogue/Screen%20Shot%202019-08-13%20at%205.12.55%20PM.png)
+![catalogue_2](https://github.com/tanya-sonker/KupcakeShop/blob/master/catalogue/Screen%20Shot%202019-08-13%20at%205.13.02%20PM.png)
+![catalogue_2](https://github.com/tanya-sonker/KupcakeShop/blob/master/catalogue/Screen%20Shot%202019-08-13%20at%205.13.08%20PM.png)
+
 # Build
 Before building, make sure to meet all the [pre-requisites](https://github.com/tanya-sonker/KupcakeShop#pre-requisites).
 
