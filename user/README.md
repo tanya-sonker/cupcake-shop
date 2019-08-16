@@ -1,112 +1,33 @@
-#User Service
-[![Build Status](https://travis-ci.org/microservices-demo/user.svg?branch=master)](https://travis-ci.org/microservices-demo/user)
-[![Coverage Status](https://coveralls.io/repos/github/microservices-demo/user/badge.svg?branch=master)](https://coveralls.io/github/microservices-demo/user?branch=master)
-[![Go Report Card](https://goreportcard.com/badge/github.com/microservices-demo/user)](https://goreportcard.com/report/github.com/microservices-demo/user)
-[![](https://images.microbadger.com/badges/image/weaveworksdemos/user.svg)](http://microbadger.com/images/weaveworksdemos/user "Get your own image badge on microbadger.com")
+# Build
+Before building, make sure to meet all the [pre-requisites](https://github.com/tanya-sonker/KupcakeShop#pre-requisites).
 
-This service covers user account storage, to include cards and addresses
-
-## Bugs, Feature Requests and Contributing
-We'd love to see community contributions. We like to keep it simple and use Github issues to track bugs and feature requests and pull requests to manage contributions.
-
->## API Spec
-
-Checkout the API Spec [here](http://microservices-demo.github.io/api/index?url=https://raw.githubusercontent.com/microservices-demo/user/master/apispec/user.json)
-
->## Build
-
-### Using Go natively
-
-```bash
-make build
+Now, you are ready to use the terminal to build and push your docker image!
+- To build 
 ```
-
-### Using Docker Compose
-
-```bash
-docker-compose build
+$ docker build -t DOCKER_USERNAME/user:latest -f docker/user/Dockerfile-release .
 ```
-
->## Test
-
-```bash
-make test
+- Now, if you had to push this image, you would do:
 ```
-
->## Run
-
-### Natively
-```bash
-docker-compose up -d user-db
-./bin/user -port=8080 -database=mongodb -mongo-host=localhost:27017
+$ docker push DOCKER_USERNAME/user
 ```
+So, if my username is "tsonker" and I have an image tagged "tsonker/user", I can push it to my DockerHub repository "user" by following the process above.
 
-### Using Docker Compose
-```bash
-docker-compose up
+# Text Functionality
+- This project uses the Twilio API to support text functionality.
+- Before you can use "text receipt" correctly, make sure to have a registered [Twilio](https://www.twilio.com/) account.
+- Next, you would have to change the Account SID, Auth Token, message to be sent, and numbers to text from and text to!
 ```
-
->## Check
-
-```bash
-curl http://localhost:8080/health
+$ cd user
+$ cd api
+$ vi endpoints.go
 ```
-
->## Use
-
-Test user account passwords can be found in the comments in `users-db-test/scripts/customer-insert.js`
-
-### Customers
-
-```bash
-curl http://localhost:8080/customers
+- Scroll to the bottom and in input mode, change:
 ```
-
-### Cards
-```bash
-curl http://localhost:8080/cards
+	accountSid := "YOUR_ACCOUNT_SID"
+    	authToken := "YOUR_AUTH_TOKEN"
+    	twilio := gotwilio.NewTwilioClient(accountSid, authToken)
+    	from := "YOUR_TWILIO_PHONE_NUMBER_"
+    	to := "PHONE_NUMBER_TO_SEND_TEXT_TO"
+    	message := "MESSAGE_TO_SEND"	
 ```
-
-### Addresses
-
-```bash
-curl http://localhost:8080/addresses
-```
-
-### Login
-```bash
-curl http://localhost:8080/login
-```
-
-### Register
-
-```bash
-curl http://localhost:8080/register
-```
-
-## Push
-
-```bash
-make dockertravisbuild
-```
-
-## Test Zipkin
-
-To test with Zipkin
-
-```
-make
-docker-compose -f docker-compose-zipkin.yml build
-docker-compose -f docker-compose-zipkin.yml up
-```
-It takes about 10 seconds to seed data
-
-you should see it at:
-[http://localhost:9411/](http://localhost:9411)
-
-be sure to hit the "Find Traces" button.  You may need to reload the page.
-
-when done you can run:
-```
-docker-compose -f docker-compose-zipkin.yml down
-```
+Make sure to obtain all the above information from your Twilio account!
