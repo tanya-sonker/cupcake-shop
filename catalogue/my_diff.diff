@@ -1,0 +1,170 @@
+diff --git a/Makefile b/Makefile
+index af4602d..0a37e72 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,7 +1,7 @@
+-NAME = weaveworksdemos/catalogue
++NAME = gcr.io/kavach-builds/sock-shop/catalogue
+ DBNAME = weaveworksdemos/catalogue-db
+
+-TAG=$(TRAVIS_COMMIT)
++TAG=latest
+
+ INSTANCE = catalogue
+
+@@ -10,7 +10,8 @@ INSTANCE = catalogue
+ default: test
+
+ release:
+-	docker build -t $(NAME) -f ./docker/catalogue/Dockerfile .
++	docker build -t $(NAME):$(TAG) -f ./docker/catalogue/Dockerfile .
++	docker push $(NAME):$(TAG)
+
+ test:
+ 	GROUP=weaveworksdemos COMMIT=test ./scripts/build.sh
+diff --git a/docker-compose.yml b/docker-compose.yml
+index 44fdfc0..6440976 100644
+--- a/docker-compose.yml
++++ b/docker-compose.yml
+@@ -5,7 +5,7 @@ services:
+         build:
+             context: .
+             dockerfile: ./docker/catalogue/Dockerfile
+-        image: weaveworksdemos/catalogue
++        image: kavach/catalogue
+         hostname: catalogue
+         restart: always
+         cap_drop:
+diff --git a/endpoints.go b/endpoints.go
+index 1aa2b82..a3de646 100644
+--- a/endpoints.go
++++ b/endpoints.go
+@@ -15,6 +15,7 @@ import (
+ type Endpoints struct {
+ 	ListEndpoint   endpoint.Endpoint
+ 	CountEndpoint  endpoint.Endpoint
++	GetIdEndpoint  endpoint.Endpoint
+ 	GetEndpoint    endpoint.Endpoint
+ 	TagsEndpoint   endpoint.Endpoint
+ 	HealthEndpoint endpoint.Endpoint
+@@ -27,6 +28,7 @@ func MakeEndpoints(s Service, tracer stdopentracing.Tracer) Endpoints {
+ 		ListEndpoint:   opentracing.TraceServer(tracer, "GET /catalogue")(MakeListEndpoint(s)),
+ 		CountEndpoint:  opentracing.TraceServer(tracer, "GET /catalogue/size")(MakeCountEndpoint(s)),
+ 		GetEndpoint:    opentracing.TraceServer(tracer, "GET /catalogue/{id}")(MakeGetEndpoint(s)),
++		GetIdEndpoint:  opentracing.TraceServer(tracer, "GET /catalogue/sock")(MakeGetIdEndpoint(s)),
+ 		TagsEndpoint:   opentracing.TraceServer(tracer, "GET /tags")(MakeTagsEndpoint(s)),
+ 		HealthEndpoint: opentracing.TraceServer(tracer, "GET /health")(MakeHealthEndpoint(s)),
+ 	}
+@@ -50,6 +52,15 @@ func MakeCountEndpoint(s Service) endpoint.Endpoint {
+ 	}
+ }
+
++// MakeGetIdEndpoint returns an endpoint via the given service.
++func MakeGetIdEndpoint(s Service) endpoint.Endpoint {
++	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
++		req := request.(getRequest)
++		sock, err := s.GetId(req.ID)
++		return getResponse{Sock: sock, Err: err}, err
++	}
++}
++
+ // MakeGetEndpoint returns an endpoint via the given service.
+ func MakeGetEndpoint(s Service) endpoint.Endpoint {
+ 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+diff --git a/logging.go b/logging.go
+index 2f3aa80..339816c 100644
+--- a/logging.go
++++ b/logging.go
+@@ -51,6 +51,19 @@ func (mw loggingMiddleware) Count(tags []string) (n int, err error) {
+ 	return mw.next.Count(tags)
+ }
+
++func (mw loggingMiddleware) GetId(id string) (s Sock, err error) {
++	defer func(begin time.Time) {
++		mw.logger.Log(
++			"method", "Get",
++			"id", id,
++			"sock", s.ID,
++			"err", err,
++			"took", time.Since(begin),
++		)
++	}(time.Now())
++	return mw.next.GetId(id)
++}
++
+ func (mw loggingMiddleware) Get(id string) (s Sock, err error) {
+ 	defer func(begin time.Time) {
+ 		mw.logger.Log(
+diff --git a/service.go b/service.go
+index 6595794..80e045e 100644
+--- a/service.go
++++ b/service.go
+@@ -18,6 +18,7 @@ type Service interface {
+ 	List(tags []string, order string, pageNum, pageSize int) ([]Sock, error) // GET /catalogue
+ 	Count(tags []string) (int, error)                                        // GET /catalogue/size
+ 	Get(id string) (Sock, error)                                             // GET /catalogue/{id}
++	GetId(id string) (Sock, error)                                             // GET /catalogue/{id}
+ 	Tags() ([]string, error)                                                 // GET /tags
+ 	Health() []Health                                                        // GET /health
+ }
+@@ -147,6 +148,23 @@ func (s *catalogueService) Count(tags []string) (int, error) {
+ 	return count, nil
+ }
+
++func (s *catalogueService) GetId(id string) (Sock, error) {
++	query := "SELECT sock.sock_id AS id,sock.name, sock.description, sock.price, sock.count, sock.image_url_1, sock.image_url_2 FROM sock WHERE sock.name = "
++	query=query+"\""+id+"\""
++
++	var sock Sock
++	err := s.db.Get(&sock, query)
++	if err != nil {
++		s.logger.Log("database error", err)
++		return Sock{}, ErrNotFound
++	}
++
++	sock.ImageURL = []string{sock.ImageURL_1, sock.ImageURL_2}
++	sock.Tags = strings.Split(sock.TagString, ",")
++
++	return sock, nil
++}
++
+ func (s *catalogueService) Get(id string) (Sock, error) {
+ 	query := baseQuery + " WHERE sock.sock_id =? GROUP BY sock.sock_id;"
+
+diff --git a/transport.go b/transport.go
+index 5c94c24..0f69454 100644
+--- a/transport.go
++++ b/transport.go
+@@ -55,6 +55,19 @@ func MakeHTTPHandler(ctx context.Context, e Endpoints, imagePath string, logger
+ 		encodeResponse,
+ 		append(options, httptransport.ServerBefore(opentracing.FromHTTPRequest(tracer, "GET /catalogue/size", logger)))...,
+ 	))
++	r.Methods("GET").Path("/catalogue/sock").Handler(httptransport.NewServer(
++		ctx,
++		circuitbreaker.Gobreaker(gobreaker.NewCircuitBreaker(gobreaker.Settings{
++			Name:    "GetId",
++			Timeout: 30 * time.Second,
++			ReadyToTrip: func(counts gobreaker.Counts) bool {
++				return false
++			},
++		}))(e.GetIdEndpoint),
++		decodeGetIdRequest,
++		encodeGetResponse, // special case, this one can have an error
++		append(options, httptransport.ServerBefore(opentracing.FromHTTPRequest(tracer, "GET /catalogue/sock", logger)))...,
++	))
+ 	r.Methods("GET").Path("/catalogue/{id}").Handler(httptransport.NewServer(
+ 		ctx,
+ 		circuitbreaker.Gobreaker(gobreaker.NewCircuitBreaker(gobreaker.Settings{
+@@ -151,6 +164,12 @@ func decodeCountRequest(_ context.Context, r *http.Request) (interface{}, error)
+ 	}, nil
+ }
+
++func decodeGetIdRequest(_ context.Context, r *http.Request) (interface{}, error) {
++	return getRequest{
++		ID: r.URL.Query().Get("id"),
++	}, nil
++}
++
+ func decodeGetRequest(_ context.Context, r *http.Request) (interface{}, error) {
+ 	return getRequest{
+ 		ID: mux.Vars(r)["id"],

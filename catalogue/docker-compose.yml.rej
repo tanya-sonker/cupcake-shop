@@ -1,0 +1,17 @@
+***************
+*** 5,11 ****
+          build:
+              context: .
+              dockerfile: ./docker/catalogue/Dockerfile
+-         image: weaveworksdemos/catalogue
+          hostname: catalogue
+          restart: always
+          cap_drop:
+--- 5,11 ----
+          build:
+              context: .
+              dockerfile: ./docker/catalogue/Dockerfile
++         image: kavach/catalogue
+          hostname: catalogue
+          restart: always
+          cap_drop:

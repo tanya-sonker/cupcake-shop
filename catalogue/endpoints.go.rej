@@ -1,0 +1,56 @@
+***************
+*** 15,20 ****
+  type Endpoints struct {
+  	ListEndpoint   endpoint.Endpoint
+  	CountEndpoint  endpoint.Endpoint
+  	GetEndpoint    endpoint.Endpoint
+  	TagsEndpoint   endpoint.Endpoint
+  	HealthEndpoint endpoint.Endpoint
+--- 15,21 ----
+  type Endpoints struct {
+  	ListEndpoint   endpoint.Endpoint
+  	CountEndpoint  endpoint.Endpoint
++ 	GetIdEndpoint  endpoint.Endpoint
+  	GetEndpoint    endpoint.Endpoint
+  	TagsEndpoint   endpoint.Endpoint
+  	HealthEndpoint endpoint.Endpoint
+***************
+*** 27,32 ****
+  		ListEndpoint:   opentracing.TraceServer(tracer, "GET /catalogue")(MakeListEndpoint(s)),
+  		CountEndpoint:  opentracing.TraceServer(tracer, "GET /catalogue/size")(MakeCountEndpoint(s)),
+  		GetEndpoint:    opentracing.TraceServer(tracer, "GET /catalogue/{id}")(MakeGetEndpoint(s)),
+  		TagsEndpoint:   opentracing.TraceServer(tracer, "GET /tags")(MakeTagsEndpoint(s)),
+  		HealthEndpoint: opentracing.TraceServer(tracer, "GET /health")(MakeHealthEndpoint(s)),
+  	}
+--- 28,34 ----
+  		ListEndpoint:   opentracing.TraceServer(tracer, "GET /catalogue")(MakeListEndpoint(s)),
+  		CountEndpoint:  opentracing.TraceServer(tracer, "GET /catalogue/size")(MakeCountEndpoint(s)),
+  		GetEndpoint:    opentracing.TraceServer(tracer, "GET /catalogue/{id}")(MakeGetEndpoint(s)),
++ 		GetIdEndpoint:  opentracing.TraceServer(tracer, "GET /catalogue/sock")(MakeGetIdEndpoint(s)),
+  		TagsEndpoint:   opentracing.TraceServer(tracer, "GET /tags")(MakeTagsEndpoint(s)),
+  		HealthEndpoint: opentracing.TraceServer(tracer, "GET /health")(MakeHealthEndpoint(s)),
+  	}
+***************
+*** 50,55 ****
+  	}
+  }
+  
+  // MakeGetEndpoint returns an endpoint via the given service.
+  func MakeGetEndpoint(s Service) endpoint.Endpoint {
+  	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+--- 52,66 ----
+  	}
+  }
+  
++ // MakeGetIdEndpoint returns an endpoint via the given service.
++ func MakeGetIdEndpoint(s Service) endpoint.Endpoint {
++ 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
++ 		req := request.(getRequest)
++ 		sock, err := s.GetId(req.ID)
++ 		return getResponse{Sock: sock, Err: err}, err
++ 	}
++ }
++ 
+  // MakeGetEndpoint returns an endpoint via the given service.
+  func MakeGetEndpoint(s Service) endpoint.Endpoint {
+  	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
