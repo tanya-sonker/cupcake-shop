@@ -1,8 +1,8 @@
 Front-end app
 ---
 Front-end application written in [Node.js](https://nodejs.org/en/) that puts together all of the microservices under [microservices-demo](https://github.com/microservices-demo/microservices-demo).
-![other_1](https://github.com/tanya-sonker/KupcakeShop/blob/master/front-end/Screen%20Shot%202019-08-13%20at%205.18.14%20PM.png)
-![other_2](https://github.com/tanya-sonker/KupcakeShop/blob/master/front-end/Screen%20Shot%202019-08-13%20at%205.18.37%20PM.png)
+![other_1](https://github.com/tanya-sonker/cupcake-shop/blob/master/front-end/Screen%20Shot%202019-08-13%20at%205.18.14%20PM.png)
+![other_2](https://github.com/tanya-sonker/cupcake-shop/blob/master/front-end/Screen%20Shot%202019-08-13%20at%205.18.37%20PM.png)
 
 # Build
 Before building, make sure to meet all the [pre-requisites](https://github.com/tanya-sonker/KupcakeShop#pre-requisites).
