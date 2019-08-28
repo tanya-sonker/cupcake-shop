@@ -1,8 +1,8 @@
 # KupcakeShop
 KupcakeShop is an e-commerce website about a dummy cupcake shop that will be used as a microservices demo web application.
 
-![Landing Page 1](https://github.com/tanya-sonker/KupcakeShop/blob/master/Screen%20Shot%202019-08-13%20at%203.00.38%20PM.png)
-![Landing Page 2](https://github.com/tanya-sonker/KupcakeShop/blob/master/Screen%20Shot%202019-08-13%20at%204.36.35%20PM.png)
+![Landing Page 1](https://github.com/tanya-sonker/cupcake-shop/blob/master/Screen%20Shot%202019-08-13%20at%203.00.38%20PM.png)
+![Landing Page 2](https://github.com/tanya-sonker/cupcake-shop/blob/master/Screen%20Shot%202019-08-13%20at%204.36.35%20PM.png)
 
 KupcakeShop is modeled after Weaveworks' [Sock Shop](https://microservices-demo.github.io/).
 
