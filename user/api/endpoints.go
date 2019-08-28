@@ -237,12 +237,13 @@ func MakeTextEndpoint(s Service) endpoint.Endpoint {
 		log.Printf("making text endpoint ;)")
 		// converting Node.js Twilio code to Go 
 		// imported package already
-		accountSid := "AC31cf22ba35afc6ca1700895e9715d8cd"
-    	authToken := "f0cec08906afd4f9e800deafa1936754"
+		// FILL OUT TWILIO ACCOUNT DETAILS!
+		accountSid := "ACXXXXXXXXXXXXXXXXXXXX"
+    	authToken := "XXXXXXXXXXXXXXXXXXXXX"
     	twilio := gotwilio.NewTwilioClient(accountSid, authToken)
-    	from := "+12029155326"
-    	to := "+14084219637"
-    	message := "Hey Amit! This is Project Kupcake. Your order has been placed, SUCCESS! :)))))"	
+    	from := "+1XXXXXXXXX"
+    	to := "+1XXXXXXXXXX"
+    	message := "Hey! This is Project Kupcake. Your order has been placed, SUCCESS! :)))))"	
     	// changed this: 23 July 2019
     	_, _, err = twilio.SendSMS(from, to, message, "", "")
 
