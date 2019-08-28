@@ -6,8 +6,6 @@ KupcakeShop is an e-commerce website about a dummy cupcake shop that will be use
 
 KupcakeShop is modeled after Weaveworks' [Sock Shop](https://microservices-demo.github.io/).
 
-Note: Redacted updates to package dependencies in files "package.json" and "yarn.lock" so, this repository would be compatible with other machines. Those updates eliminate critical security vulnerabilities (which GitHub sends you alerts about) but are updated locally.
-
 # Built With
 ## Programming Languages 
 - HTML
